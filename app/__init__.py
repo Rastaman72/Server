@@ -1,9 +1,11 @@
 import os
-from flask import Flask, request, redirect, url_for
+from flask import Flask, request, render_template
 from app.extras.scripts.label_image import runImageFile
+from werkzeug import secure_filename
+
 
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+app.config['UPLOAD_FOLDER'] = "/My/Studia/Magisterka/PROEJCT/app"
 
 
 @app.route('/')
@@ -19,9 +21,19 @@ def script(imageName):
     return result
 
 
-@app.route('/uploadImage')
+@app.route('/upload')
 def upload_file():
+    return render_template('upload.html')
+
+
+@app.route('/uploader', methods=['GET', 'POST'])
+def upload_fileR():
     if request.method == 'POST':
-        f = request.files['file']
-        f.save(secure_filename(f.filename))
+        file = request.files['file']
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         return 'file uploaded successfully'
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
