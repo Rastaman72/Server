@@ -68,9 +68,10 @@ def load_labels(label_file):
   return label
 
 def runImageFile(imageName):
-    file_name = "/My/Studia/Magisterka/Server/app/" + imageName + ".jpg"
-    model_file = "/My/Studia/Magisterka/Server/app/extras/tf_files/retrained_graph.pb"
-    label_file = "/My/Studia/Magisterka/Server/app/extras/tf_files/retrained_labels.txt"
+    root = "/My/Studia/Magisterka/PROEJCT/app/"
+    file_name = root + imageName
+    model_file = root + "extras/tf_files/retrained_graph.pb"
+    label_file = root + "extras/tf_files/retrained_labels.txt"
     input_height = 224
     input_width = 224
     input_mean = 128

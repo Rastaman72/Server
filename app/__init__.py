@@ -3,7 +3,6 @@ from flask import Flask, request, render_template
 from app.extras.scripts.label_image import runImageFile
 from werkzeug import secure_filename
 
-
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "/My/Studia/Magisterka/PROEJCT/app"
 
@@ -32,7 +31,10 @@ def upload_fileR():
         file = request.files['file']
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return 'file uploaded successfully'
+        result = runImageFile(filename)
+        print(result)
+        return 'file uploaded successfully' + "\n" + result
+
 
 
 if __name__ == '__main__':

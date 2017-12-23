@@ -16,11 +16,3 @@ def script(imageName):
     result = runImageFile(imageName)
     print(result)
     return result
-
-
-@app.route('/uploadImage')
-def upload_file():
-    if request.method == 'POST':
-        f = request.files['file']
-        f.save(secure_filename(f.filename))
-        return 'file uploaded successfully'
