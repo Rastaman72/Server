@@ -1,6 +1,4 @@
-daisy
-dandelion
-roses
-sunflowers
-tulips
-vader
+angryface
+happyface
+neutralface
+sadface
