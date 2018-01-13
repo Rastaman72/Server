@@ -23,17 +23,17 @@ import time
 
 import numpy as np
 import tensorflow as tf
+import collections
 
 def load_graph(model_file):
-  graph = tf.Graph()
-  graph_def = tf.GraphDef()
+    graph = tf.Graph()
+    graph_def = tf.GraphDef()
+    with open(model_file, "rb") as f:
+        graph_def.ParseFromString(f.read())
+    with graph.as_default():
+        tf.import_graph_def(graph_def)
+    return graph
 
-  with open(model_file, "rb") as f:
-    graph_def.ParseFromString(f.read())
-  with graph.as_default():
-    tf.import_graph_def(graph_def)
-
-  return graph
 
 def read_tensor_from_image_file(file_name, input_height=299, input_width=299,
 				input_mean=0, input_std=255):
@@ -62,11 +62,11 @@ def read_tensor_from_image_file(file_name, input_height=299, input_width=299,
 
 
 def load_labels(label_file):
-  label = []
-  proto_as_ascii_lines = tf.gfile.GFile(label_file).readlines()
-  for l in proto_as_ascii_lines:
-    label.append(l.rstrip())
-  return label
+    label = []
+    proto_as_ascii_lines = tf.gfile.GFile(label_file).readlines()
+    for l in proto_as_ascii_lines:
+        label.append(l.rstrip())
+    return label
 
 
 def runImageFile(imageName):
@@ -108,10 +108,22 @@ def runImageFile(imageName):
     # return top_k
     resultSring = ""
     firstPlace = labels[0]
+    result_dict = {}
+
     for i in top_k:
-        resultSring += str(labels[i])+" "+str(results[i])+"\n"
-        # print(labels[i], results[i])
-    return [resultSring, firstPlace]
+        #resultSring += str(labels[i])+" "+str(results[i])+"\n"
+        result_dict[labels[i]] = results[i]
+
+        #print(labels[i], results[i])
+    #print(result_dict)
+    od = collections.OrderedDict(sorted(result_dict.items()))
+    resultSring += imageName+","
+    for k, v in od.items():
+        #print(k, v)
+        resultSring += str(k)+","+str(v)+","
+
+    #print(resultSring)
+    return resultSring
 
 
 if __name__ == "__main__":

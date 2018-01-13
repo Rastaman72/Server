@@ -1,9 +1,12 @@
 import os
 import shutil
 from flask import Flask, request, render_template, redirect, flash
-from label_image import runImageFile
+from app.extras.scripts.label_image import runImageFile
 from werkzeug import secure_filename
+import csv
 
+from os import listdir
+from os.path import isfile, join
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 app = Flask(__name__)
@@ -14,6 +17,20 @@ app.config['UPLOAD_FOLDER'] = "/My/Studia/Magisterka/PROEJCT/app/"
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/analyzeNormalImage', methods=['GET'])
+def analyzeNormalImage():
+    mypath = "/My/Studia/Magisterka/PROEJCT/app/extras/faces"
+    onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+    file = open(mypath+'result.txt', 'a+')
+
+    for filename in onlyfiles:
+        if allowed_file(filename):
+            result = runImageFile(filename)
+            print(result)
+            file.write(result+ '\n')
+    return "onlyfiles"
 
 
 @app.route('/uploadFiles', methods=['GET', 'POST'])
@@ -33,7 +50,8 @@ def uploadNewfile():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             result = runImageFile(filename)
-            print(result[0])
+            print
+            # print(result)
             # print(result[1])
             # src = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             # dst = os.path.join(app.config['UPLOAD_FOLDER'], "/extras/test",result[1],"/",filename)
